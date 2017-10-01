@@ -1,5 +1,7 @@
 package ar.edu.unq.iu.arena.xtend;
 
+import ar.edu.unq.iu.modelo.Ingrediente;
+import ar.edu.unq.iu.repo.RepoIngrediente;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.arena.aop.windows.TransactionalDialog;
@@ -12,12 +14,13 @@ import org.uqbar.arena.widgets.Panel;
 import org.uqbar.arena.widgets.TextBox;
 import org.uqbar.arena.windows.WindowOwner;
 import org.uqbar.arena.xtend.ArenaXtendExtensions;
+import org.uqbar.commons.applicationContext.ApplicationContext;
 import org.uqbar.lacar.ui.model.Action;
 import org.uqbar.lacar.ui.model.ControlBuilder;
 
 @SuppressWarnings("all")
-public class CrearEditarIngredienteWindow /* extends /* TransactionalDialog<Ingrediente> */  */{
-  public CrearEditarIngredienteWindow(final WindowOwner owner, final /* Ingrediente */Object model) {
+public class CrearEditarIngredienteWindow extends TransactionalDialog<Ingrediente> {
+  public CrearEditarIngredienteWindow(final WindowOwner owner, final Ingrediente model) {
     super(owner, model);
     this.setTitle("Editar ingrediente");
   }
@@ -82,17 +85,17 @@ public class CrearEditarIngredienteWindow /* extends /* TransactionalDialog<Ingr
   }
   
   public RepoIngrediente getRepoIngredientes() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nIngrediente cannot be resolved to a type."
-      + "\nRepoIngrediente cannot be resolved to a type.");
+    Object _singleton = ApplicationContext.getInstance().<Object>getSingleton(Ingrediente.class);
+    return ((RepoIngrediente) _singleton);
   }
   
   public void executeTask() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe method getRepoIngredientes() from the type CrearEditarIngredienteWindow refers to the missing type RepoIngrediente"
-      + "\nThe method getRepoIngredientes() from the type CrearEditarIngredienteWindow refers to the missing type RepoIngrediente"
-      + "\nisNew cannot be resolved"
-      + "\ncreate cannot be resolved"
-      + "\nupdate cannot be resolved");
+    boolean _isNew = this.getModelObject().isNew();
+    if (_isNew) {
+      this.getRepoIngredientes().create(this.getModelObject());
+    } else {
+      this.getRepoIngredientes().update(this.getModelObject());
+    }
+    super.executeTask();
   }
 }

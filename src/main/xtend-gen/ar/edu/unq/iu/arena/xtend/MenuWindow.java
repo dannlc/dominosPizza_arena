@@ -1,5 +1,10 @@
 package ar.edu.unq.iu.arena.xtend;
 
+import ar.edu.unq.iu.appmodel.MenuAppModel;
+import ar.edu.unq.iu.arena.xtend.CrearEditarIngrediente;
+import ar.edu.unq.iu.arena.xtend.CrearEditarPizza;
+import ar.edu.unq.iu.repo.RepoIngrediente;
+import ar.edu.unq.iu.repo.RepoPizza;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.arena.widgets.Button;
@@ -9,10 +14,9 @@ import org.uqbar.arena.windows.WindowOwner;
 import org.uqbar.lacar.ui.model.Action;
 
 @SuppressWarnings("all")
-public class MenuWindow /* extends /* SimpleWindow<MenuAppModel> */  */{
+public class MenuWindow extends SimpleWindow<MenuAppModel> {
   public MenuWindow(final WindowOwner parent) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nMenuAppModel cannot be resolved.");
+    super(parent, new MenuAppModel());
   }
   
   public void createMainTemplate(final Panel mainPanel) {
@@ -21,9 +25,10 @@ public class MenuWindow /* extends /* SimpleWindow<MenuAppModel> */  */{
   }
   
   protected void createFormPanel(final Panel mainPanel) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nrepoPizza cannot be resolved"
-      + "\nrepoIngrediente cannot be resolved");
+    RepoPizza _repoPizza = this.getModelObject().getRepoPizza();
+    new CrearEditarPizza(mainPanel, _repoPizza, this);
+    RepoIngrediente _repoIngrediente = this.getModelObject().getRepoIngrediente();
+    new CrearEditarIngrediente(mainPanel, _repoIngrediente, this);
   }
   
   protected void addActions(final Panel actionsPanel) {

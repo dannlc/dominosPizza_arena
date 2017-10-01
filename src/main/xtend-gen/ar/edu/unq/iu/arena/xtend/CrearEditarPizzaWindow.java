@@ -1,23 +1,33 @@
 package ar.edu.unq.iu.arena.xtend;
 
+import ar.edu.unq.iu.arena.xtend.ContainsTransformer;
+import ar.edu.unq.iu.modelo.Ingrediente;
+import ar.edu.unq.iu.modelo.Pizza;
+import ar.edu.unq.iu.repo.RepoIngrediente;
+import ar.edu.unq.iu.repo.RepoPizza;
+import java.util.List;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.arena.aop.windows.TransactionalDialog;
 import org.uqbar.arena.bindings.ObservableValue;
 import org.uqbar.arena.layout.ColumnLayout;
+import org.uqbar.arena.layout.HorizontalLayout;
 import org.uqbar.arena.widgets.Button;
+import org.uqbar.arena.widgets.CheckBox;
 import org.uqbar.arena.widgets.Control;
 import org.uqbar.arena.widgets.Label;
 import org.uqbar.arena.widgets.Panel;
 import org.uqbar.arena.widgets.TextBox;
 import org.uqbar.arena.windows.WindowOwner;
 import org.uqbar.arena.xtend.ArenaXtendExtensions;
+import org.uqbar.commons.applicationContext.ApplicationContext;
 import org.uqbar.lacar.ui.model.Action;
 import org.uqbar.lacar.ui.model.ControlBuilder;
+import org.uqbar.lacar.ui.model.bindings.Binding;
 
 @SuppressWarnings("all")
-public class CrearEditarPizzaWindow /* extends /* TransactionalDialog<Pizza> */  */{
-  public CrearEditarPizzaWindow(final WindowOwner owner, final /* Pizza */Object model) {
+public class CrearEditarPizzaWindow extends TransactionalDialog<Pizza> {
+  public CrearEditarPizzaWindow(final WindowOwner owner, final Pizza model) {
     super(owner, model);
     this.setTitle("Editar Pizza");
   }
@@ -52,23 +62,35 @@ public class CrearEditarPizzaWindow /* extends /* TransactionalDialog<Pizza> */ 
   }
   
   public void mostrarIngredientes(final Panel panel) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nIngrediente cannot be resolved to a type."
-      + "\nThe method getRepoIngredientes() from the type CrearEditarPizzaWindow refers to the missing type RepoIngrediente"
-      + "\ngetAllIngredientes cannot be resolved"
-      + "\ngetNombre cannot be resolved");
+    List<Ingrediente> _allIngredientes = this.getRepoIngredientes().getAllIngredientes();
+    for (final Ingrediente ingrediente : _allIngredientes) {
+      {
+        Panel _panel = new Panel(panel);
+        HorizontalLayout _horizontalLayout = new HorizontalLayout();
+        final Panel selector = _panel.setLayout(_horizontalLayout);
+        CheckBox _checkBox = new CheckBox(selector);
+        final Procedure1<CheckBox> _function = new Procedure1<CheckBox>() {
+          public void apply(final CheckBox it) {
+            Binding<Object, Control, ControlBuilder> _bindValueToProperty = it.<Object, ControlBuilder>bindValueToProperty("ingredientes");
+            ContainsTransformer<Ingrediente> _containsTransformer = new ContainsTransformer<Ingrediente>(ingrediente);
+            _bindValueToProperty.setTransformer(_containsTransformer);
+          }
+        };
+        ObjectExtensions.<CheckBox>operator_doubleArrow(_checkBox, _function);
+        Label _label = new Label(selector);
+        _label.setText(ingrediente.getNombre());
+      }
+    }
   }
   
   public RepoIngrediente getRepoIngredientes() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nIngrediente cannot be resolved to a type."
-      + "\nRepoIngrediente cannot be resolved to a type.");
+    Object _singleton = ApplicationContext.getInstance().<Object>getSingleton(Ingrediente.class);
+    return ((RepoIngrediente) _singleton);
   }
   
-  public /* RepoPizza */Object getRepoPizza() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nRepoPizza cannot be resolved to a type."
-      + "\nThe method or field Pizza is undefined");
+  public RepoPizza getRepoPizza() {
+    Object _singleton = ApplicationContext.getInstance().<Object>getSingleton(Pizza.class);
+    return ((RepoPizza) _singleton);
   }
   
   protected void addActions(final Panel actions) {
@@ -103,11 +125,12 @@ public class CrearEditarPizzaWindow /* extends /* TransactionalDialog<Pizza> */ 
   }
   
   public void executeTask() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe method getRepoPizza() from the type CrearEditarPizzaWindow refers to the missing type RepoPizza"
-      + "\nThe method getRepoPizza() from the type CrearEditarPizzaWindow refers to the missing type RepoPizza"
-      + "\nisNew cannot be resolved"
-      + "\ncreate cannot be resolved"
-      + "\nupdate cannot be resolved");
+    boolean _isNew = this.getModelObject().isNew();
+    if (_isNew) {
+      this.getRepoPizza().create(this.getModelObject());
+    } else {
+      this.getRepoPizza().update(this.getModelObject());
+    }
+    super.executeTask();
   }
 }
